@@ -29,6 +29,7 @@ export default class WeatherInfo extends LightningElement {
     }
 
     async Weather(){
+        console.log('called...');
         this.load=true;
         this.WeatherData=[];
         await GetWeather({Area:this.Dup})

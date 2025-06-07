@@ -31,12 +31,13 @@
                             <div>
                                 <lightning-card>
                                     <div style="padding: 2%;text-align:center;">
-                                        <b style="color: darkred;"><lightning-icon icon-name="utility:checkin"
-                                                size="x-small"></lightning-icon>{i.location.name},
+                                        <b style="color: darkred;font-size: 16px;"><lightning-icon icon-name="utility:checkin"
+                                                size="small"></lightning-icon>{i.location.name},
                                             {i.location.country}</b>
                                         <h1><img src={i.current.condition.icon} /><b
                                                 style="font-size:40px;margin-top: 1%;">{i.current.temp_c} °C</b></h1>
-                                        <h1><b>{i.current.condition.text}</b></h1>
+                                        <lightning-badge label={i.current.condition.text}></lightning-badge>
+                                        <h1><b></b></h1>
                                         <p slot="footer"></p>
                                     </div>
 
@@ -64,17 +65,32 @@
                             style="display: grid; grid-template-columns: auto auto auto;margin:0.5%; padding: 10px;margin-bottom:0.5rem;">
                             <template for:each={i.forecast.forecastday} for:item="j">
                                 <div key={j.date}>
-                                    <lightning-card style="background-color:#d8d8d8;" class="slds-size_xxlarge">
+                                    <lightning-card class="slds-size_xxlarge">
+                                        <p slot="title" style="font-weight: 600px;"><lightning-icon icon-name="utility:date_time" size="small"></lightning-icon>&nbsp;{j.dayOfWeek}</p>
                                         <lightning-button icon-name="utility:clock" label="Hourly" slot="actions" data-value={j.date}
                                             onclick={ShowModal}></lightning-button>
                                         <div style="padding: 2%;text-align:center;" class="slds-col">
-                                            <h1><b style="color: black;"><span
-                                                        style="color: darkred;"></span>{j.dayOfWeek}</b></h1><br />
+                                            
                                             <h1><b><img src={j.day.condition.icon} />{j.day.condition.text}</b></h1>
-                                            <h1><b>Temperature between <span style="color: green;">{j.day.mintemp_c}°C</span> to
-                                                    <span style="color: green;">{j.day.maxtemp_c}°C</span></b></h1>
             
                                         </div>
+                                        
+                                        
+                                        <table slot="footer" class="inner-table"> 
+                                            <tbody>
+                                                <tr>
+                                                    <th><lightning-icon icon-name="utility:sort" size="small"></lightning-icon> &nbsp; Range</th>
+                                                    <th>Min</th>
+                                                    <th>Max</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>{j.dayOfWeek}</td>
+                                                    <td>{j.day.mintemp_c} °C</td>
+                                                    <td>{j.day.maxtemp_c} °C</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
                                     </lightning-card>
                                 </div>
                             </template>
@@ -87,17 +103,31 @@
                             <br/>
                             <template for:each={i.forecast.forecastday} for:item="j">
                                 <div key={j.date}>
-                                    <lightning-card style="background-color:#d4d4d4;margin-right:1rem" class="slds-size_xxlarge">
+                                    <lightning-card style="margin-right:1rem" class="slds-size_xxlarge">
+                                        <p slot="title" style="font-weight: 600px;"><lightning-icon icon-name="utility:date_time" size="small"></lightning-icon>&nbsp;{j.dayOfWeek}</p>
                                         <lightning-button icon-name="utility:clock" label="Hourly" variant="brand-text" slot="actions" data-value={j.date}
                                             onclick={ShowModal}></lightning-button>
                                         <div style="padding: 2%;text-align:center;" class="slds-col">
-                                            <h1><b style="color: black;"><span
-                                                        style="color: darkred;"></span>{j.dayOfWeek}</b></h1><br />
+                                            
                                             <h1><b><img src={j.day.condition.icon} />{j.day.condition.text}</b></h1>
-                                            <h1><b>Temperature between <span style="color:green;">{j.day.mintemp_c}°C</span>
-                                                    to <span style="color: green;">{j.day.maxtemp_c}°C</span></b></h1>
             
                                         </div>
+                                        
+                                        <table slot="footer" class="inner-table">
+                                            <tbody>
+                                                <tr>
+                                                    <th><lightning-icon icon-name="utility:sort" size="small"></lightning-icon> &nbsp; Range</th>
+                                                    <th>Min</th>
+                                                    <th>Max</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>{j.dayOfWeek}</td>
+                                                    <td>{j.day.mintemp_c} °C</td>
+                                                    <td>{j.day.maxtemp_c} °C</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
                                     </lightning-card>
                                 </div>
                             </template>
@@ -118,7 +148,7 @@
                 <div class="slds-modal__container">
                     <!-- Modal/Popup Box LWC header here -->
                     <header class="slds-modal__header">
-                        <h2 class="slds-text-heading_medium slds-hyphenate">{SelectedDate}</h2>
+                        <h2 class="slds-text-heading_medium slds-hyphenate" style="color: darkred;">{SelectedDate}</h2>
                     </header>
                     <!-- Modal/Popup Box LWC body starts here -->
                     <div class="slds-modal__content slds-p-around_medium hourly-table">
@@ -155,7 +185,7 @@
                                 </tr>
                                 <template for:each={ModalData} for:item="i">
                                     <tr key={i.time}>
-                                        <td>{i.xtime}</td>
+                                        <td><b>{i.xtime}</b></td>
                                         <td>{i.temp_c}°C</td>
                                         <td><div><img src={i.condition.icon} /><br><b>{i.condition.text}</b></div></td>
                                     </tr>
@@ -178,7 +208,7 @@
 
         <template if:true={load}>
             <div class="exampleHolder">
-                <lightning-spinner alternative-text="Loading" size="medium" varient="brand"></lightning-spinner>
+                <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
             </div>
         </template>
     </div>

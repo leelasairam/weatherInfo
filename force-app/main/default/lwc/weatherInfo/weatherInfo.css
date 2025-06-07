@@ -29,8 +29,17 @@ button{
 	font-size: medium;
 }
 
-.hourly-table th,.hourly-table td{
+th{
+    background: rgb(228, 228, 228);
+}
+
+
+th,td{
 	border: 1px solid #9b9b9b;
-    text-align: left;
+    text-align: center;
     padding: 8px;
+}
+
+.inner-table th{
+    background: rgb(255, 255, 255);
 }
