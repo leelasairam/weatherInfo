@@ -29,11 +29,16 @@ export default class WeatherInfo extends LightningElement {
     }
 
     async Weather(){
-        console.log('called...');
+        console.log('called...',this.Dup);
         this.load=true;
         this.WeatherData=[];
         await GetWeather({Area:this.Dup})
         .then(result=>{
+            if(result == null){
+                this.showToast('Error','Please enter valid location','error');
+                this.load = false;
+                return;
+            }
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             console.log('forcast1',result.forecast.forecastday);
            const tempForecast = result.forecast.forecastday.map(i=>({
@@ -48,44 +53,50 @@ export default class WeatherInfo extends LightningElement {
         })
         .catch(error => {
             this.error=error;
+            console.log(this.error);
         });
         this.load=false;
     }
 
     async GetLocation() {
-    if (navigator.geolocation) {
-        try {
-            this.load= true;
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject);
-            });
+        if (navigator.geolocation) {
+            try {
+                this.load= true;
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
 
-            const loc1 = position.coords.latitude;
-            const loc2 = position.coords.longitude;
-            this.Dup = `${loc1},%20${loc2}`;
+                const loc1 = position.coords.latitude;
+                const loc2 = position.coords.longitude;
+                this.Dup = `${loc1},%20${loc2}`;
 
-            console.log('Location:', this.Dup);
+                console.log('Location:', this.Dup);
+                localStorage.setItem('coords',this.Dup);
 
-            await this.Weather(); // Now runs after Dup is properly set
-            this.AR = "";
-            this.load= false;
+                await this.Weather(); // Now runs after Dup is properly set
+                this.AR = "";
+                this.load= false;
 
-        } catch (error) {
-            this.showToast('Please enable location',error,'error');
-            console.error('Error getting location:', error);
-            this.load= false;
+            } catch (error) {
+                this.showToast('Please enable location','','error');
+                console.error('Error getting location:', error);
+                this.load= false;
+            }
+        } else {
+            this.showToast('Geolocation not supported.','','error');
+            console.warn('Geolocation not supported.');
         }
-    } else {
-        this.showToast('Geolocation not supported.','','error');
-        console.warn('Geolocation not supported.');
     }
-}
 
 
     async connectedCallback(){
-        this.Dup="London";
+        if(localStorage.getItem('coords')){
+            this.Dup = localStorage.getItem('coords');
+        }
+        else{
+            this.Dup = await this.getIPAddress();
+        }
         await this.Weather();
-        //this.GetLocation();
     }
 
     renderedCallback(){
@@ -94,6 +105,25 @@ export default class WeatherInfo extends LightningElement {
             i.style.backgroundColor = this.colorslist[j];
         })
     }
+
+    async getIPAddress() {
+        try {
+            const response = await fetch('https://ipapi.co/json/');
+            const data = await response.json();
+
+            console.log("Latitude:", data.latitude);
+            console.log("Longitude:", data.longitude);
+
+            const coords = `${data.latitude},%20${data.longitude}`;
+            console.log('IP Coords:', coords);
+
+            return coords || 'London';
+        } catch (error) {
+            console.error("Error fetching IP location:", error);
+            return 'London';
+        }
+    }
+
 
     ShowModal(event){
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
