@@ -29,27 +29,30 @@
                     <lightning-layout multiple-rows>
                         <lightning-layout-item size="12">
                             <div>
-                                <lightning-card>
-                                    <div style="padding: 2%;text-align:center;">
-                                        <b style="color: darkred;font-size: 16px;"><lightning-icon icon-name="utility:checkin"
-                                                size="small"></lightning-icon>{i.location.name},
-                                            {i.location.country}</b>
-                                        <h1><img src={i.current.condition.icon} /><b
-                                                style="font-size:40px;margin-top: 1%;">{i.current.temp_c} °C</b></h1>
-                                        <lightning-badge label={i.current.condition.text}></lightning-badge>
-                                        <h1><b></b></h1>
-                                        <p slot="footer"></p>
-                                    </div>
+                                <div style={bgImgUrl}>
+                                    <div>
+                                        <div style="padding: 2%;text-align:center;font-size: 16px;background-color:inherit;">
+                                            <div class={fontColor}>
+                                                <p><lightning-icon icon-name="utility:checkin"
+                                                    size="small"></lightning-icon>{i.location.name},
+                                                {i.location.country}</p>
 
-                                    <div class="weather-grid">
-                                        <div class="weather-item">Feels Like: {i.current.feelslike_c} °C</div>
-                                        <div class="weather-item">Wind: {i.current.wind_kph} km/h</div>
-                                        <div class="weather-item">Humidity: {i.current.humidity}%</div>
-                                        <div class="weather-item">Cloud: {i.current.cloud}%</div>
-                                        <div class="weather-item">Visibility: {i.current.vis_km} km</div>
-                                        <div class="weather-item">Precipitation: {i.current.precip_mm} mm</div>
+                                                <p style="background-image: url({i.current.condition.icon});">
+                                                    <img src={i.current.condition.icon} /> {i.current.temp_c} °C , {i.current.condition.text}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="weather-grid">
+                                            <div class="glass-effect">Feels Like: {i.current.feelslike_c} °C</div>
+                                            <div class="glass-effect">Wind: {i.current.wind_kph} km/h</div>
+                                            <div class="glass-effect">Humidity: {i.current.humidity}%</div>
+                                            <div class="glass-effect">Cloud: {i.current.cloud}%</div>
+                                            <div class="glass-effect">Visibility: {i.current.vis_km} km</div>
+                                            <div class="glass-effect">Precipitation: {i.current.precip_mm} mm</div>
+                                        </div>
                                     </div>
-                                </lightning-card>
+                                </div>
                             </div>
                         </lightning-layout-item>
 

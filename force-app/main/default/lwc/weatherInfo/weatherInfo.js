@@ -2,6 +2,7 @@ import { LightningElement,wire,track } from 'lwc';
 import GetWeather from '@salesforce/apex/NewsClass.GetWeather';
 import FORM_FACTOR from '@salesforce/client/formFactor';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import BackgroundImg from '@salesforce/resourceUrl/WeatherAppBG';
 export default class WeatherInfo extends LightningElement {
     @track WeatherData=[];
     @track error;
@@ -12,6 +13,25 @@ export default class WeatherInfo extends LightningElement {
     @track ModalData={};
     SelectedDate;
     colorslist = ['#FFEFEF','#F0EBE3','#B2C8BA','#F3FDE8','#FFF6BD','#FAF8F1'];
+    fontColor = 'light-bg';
+
+    get bgImgUrl(){
+        const bgImageUrls = [
+                            `${BackgroundImg}/weather_app_bg/images/img1.jpg`,
+                            `${BackgroundImg}/weather_app_bg/images/img2.jpg`,
+                            `${BackgroundImg}/weather_app_bg/images/img3.jpg`,
+                            `${BackgroundImg}/weather_app_bg/images/img4.jpg`
+                            ];
+        const randomNumber =  Math.floor(Math.random() * 4);
+        if(randomNumber === 1 || randomNumber===3){
+            this.fontColor = 'dark-bg';
+        }
+        else{
+            this.fontColor = 'light-bg';
+        }
+        console.log(randomNumber,bgImageUrls[randomNumber]);
+        return `background-image:url("${bgImageUrls[randomNumber]}");background-size: cover;background-position: center center;background-repeat: no-repeat;padding-top:0.5rem;padding-bottom:0.5rem`
+    }
     GetArea(event){
         this.AR=event.target.value;
         this.Dup=this.AR.replace(/ /gi,"%20");

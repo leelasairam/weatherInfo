@@ -43,3 +43,25 @@ th,td{
 .inner-table th{
     background: rgb(255, 255, 255);
 }
+
+.glass-effect{
+    box-shadow: 0 0 5px 0 ;
+    background: inherit;
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    text-align: center; /* Centers text inside each item */
+    border: 1px solid inherit; /* Optional: adds a border to each item */
+    box-sizing: border-box; 
+    font-weight: 600;
+    color: white;
+}
+
+.light-bg{
+    color:white;
+    font-weight: 600;
+}
+
+.dark-bg{
+    color: black;
+    font-weight: 600;
+}
