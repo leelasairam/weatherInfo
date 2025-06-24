@@ -14,14 +14,14 @@ export default class WeatherInfo extends LightningElement {
     SelectedDate;
     colorslist = ['#FFEFEF','#F0EBE3','#B2C8BA','#F3FDE8','#FFF6BD','#FAF8F1'];
     fontColor = 'light-bg';
-
-    get bgImgUrl(){
-        const bgImageUrls = [
+    bgImageUrls = [
                             `${BackgroundImg}/weather_app_bg/images/img1.jpg`,
                             `${BackgroundImg}/weather_app_bg/images/img2.jpg`,
                             `${BackgroundImg}/weather_app_bg/images/img3.jpg`,
                             `${BackgroundImg}/weather_app_bg/images/img4.jpg`
-                            ];
+                    ];
+
+    get bgImgUrl(){
         const randomNumber =  Math.floor(Math.random() * 4);
         if(randomNumber === 1 || randomNumber===3){
             this.fontColor = 'dark-bg';
@@ -29,13 +29,18 @@ export default class WeatherInfo extends LightningElement {
         else{
             this.fontColor = 'light-bg';
         }
-        console.log(randomNumber,bgImageUrls[randomNumber]);
-        return `background-image:url("${bgImageUrls[randomNumber]}");background-size: cover;background-position: center center;background-repeat: no-repeat;padding-top:0.5rem;padding-bottom:0.5rem`
+        console.log(randomNumber,this.bgImageUrls[randomNumber]);
+        return `background-image:url("${this.bgImageUrls[randomNumber]}");background-size: cover;background-position: center center;background-repeat: no-repeat;padding-top:0.5rem;padding-bottom:0.5rem;border-radius:4px`
     }
-    GetArea(event){
-        this.AR=event.target.value;
-        this.Dup=this.AR.replace(/ /gi,"%20");
-        
+    GetArea(){
+        const location = this.template.querySelector('.location-inp').value;
+        if(location.length>=3){
+            this.Dup=location.replace(/ /gi,"%20");
+            this.Weather();
+        }
+        else{
+            this.showToast('Enter atleast 3 charecters','','error');
+        }
     }
 
     showToast(title,msg,varient) {
@@ -63,7 +68,11 @@ export default class WeatherInfo extends LightningElement {
             console.log('forcast1',result.forecast.forecastday);
            const tempForecast = result.forecast.forecastday.map(i=>({
                 ...JSON.parse(JSON.stringify(i)),
-                dayOfWeek: days[new Date(i.date).getDay()]
+                dayOfWeek: days[new Date(i.date).getDay()],
+                hour:i.hour.map(j=>({
+                ...JSON.parse(JSON.stringify(j)),
+                xtime : j.time.split(' ')[1]
+                }))
             }))
             console.log('tempForecast (modified):', tempForecast);
             const tempFullForecast = {...result.forecast,forecastday:JSON.parse(JSON.stringify(tempForecast))};

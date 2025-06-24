@@ -47,13 +47,14 @@ th,td{
 .glass-effect{
     box-shadow: 0 0 5px 0 ;
     background: inherit;
+    background-color: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(10px);
     padding: 10px;
     text-align: center; /* Centers text inside each item */
     border: 1px solid inherit; /* Optional: adds a border to each item */
     box-sizing: border-box; 
     font-weight: 600;
-    color: white;
+    color: rgb(230, 230, 230);
 }
 
 .light-bg{
@@ -64,4 +65,14 @@ th,td{
 .dark-bg{
     color: black;
     font-weight: 600;
+}
+
+.forecast-table-container{
+    overflow-x: auto; /* or overflow-x: scroll; */
+    white-space: nowrap;
+}
+
+.forecast-table-container table{
+    width: 300px; /* Or a fixed width if needed */
+   display: block;
 }

@@ -1,15 +1,23 @@
 <template>
     <div style="background-color:white;">
-        
-            <lightning-card>
-                <div class="New slds-p-horizontal_small">
-                    <input placeholder="Enter location..." onchange={GetArea} value={AR} type="text" style="margin-right: 0.5rem;" />
-                    <button class="button-4" style="margin-right: 0.5rem;" onclick={Weather}> Search</button>
-                    <button class="button-4" onclick={GetLocation} style="margin-right: 2%;">⚲</button>
-                </div>
 
-            </lightning-card>
-            <br/>
+        <lightning-card>
+            <div style="padding-right: 0.6rem;padding-left:0.4rem;text-align:center">
+                <lightning-layout>
+                    <lightning-layout-item size="8" padding="around-x-small" large-device-size="10">
+                        <lightning-input type="search" placeholder="Enter location..." class="location-inp" variant="label-hidden"></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-x-small" large-device-size="1">
+                        <lightning-button-icon onclick={GetArea} icon-name="utility:search" variant="brand" style="margin-left: 0.4rem;"></lightning-button-icon>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-x-small" large-device-size="1">
+                        <lightning-button-icon onclick={GetLocation} icon-name="utility:checkin"></lightning-button-icon>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+
+        </lightning-card>
+        <br />
         <!--<template if:false={CMPDevice}>
             <div class="New"
                 style="padding-left:10%;padding-right:10%;text-align:center;margin-bottom:1%;padding-bottom:1%;">
@@ -31,14 +39,16 @@
                             <div>
                                 <div style={bgImgUrl}>
                                     <div>
-                                        <div style="padding: 2%;text-align:center;font-size: 16px;background-color:inherit;">
+                                        <div
+                                            style="padding: 2%;text-align:center;font-size: 16px;background-color:inherit;">
                                             <div class={fontColor}>
                                                 <p><lightning-icon icon-name="utility:checkin"
-                                                    size="small"></lightning-icon>{i.location.name},
-                                                {i.location.country}</p>
+                                                        size="small"></lightning-icon>{i.location.name},
+                                                    {i.location.country}</p>
 
                                                 <p style="background-image: url({i.current.condition.icon});">
-                                                    <img src={i.current.condition.icon} /> {i.current.temp_c} °C , {i.current.condition.text}
+                                                    <img src={i.current.condition.icon} /> <span style="font-size: x-large;">{i.current.temp_c} °C </span>,
+                                                    {i.current.condition.text}
                                                 </p>
                                             </div>
                                         </div>
@@ -61,87 +71,126 @@
             </template>
         </div>
 
-            <div class="slds-p-horizontal_small" style="background-color: rgb(245, 245, 245);">
-                <template for:each={WeatherData} for:item="i">
-                    <template if:true={CMPDevice}>
-                        <div key={i.location}
-                            style="display: grid; grid-template-columns: auto auto auto;margin:0.5%; padding: 10px;margin-bottom:0.5rem;">
-                            <template for:each={i.forecast.forecastday} for:item="j">
-                                <div key={j.date}>
-                                    <lightning-card class="slds-size_xxlarge">
-                                        <p slot="title" style="font-weight: 600px;"><lightning-icon icon-name="utility:date_time" size="small"></lightning-icon>&nbsp;{j.dayOfWeek}</p>
-                                        <lightning-button icon-name="utility:clock" label="Hourly" slot="actions" data-value={j.date}
-                                            onclick={ShowModal}></lightning-button>
-                                        <div style="padding: 2%;text-align:center;" class="slds-col">
-                                            
-                                            <h1><b><img src={j.day.condition.icon} />{j.day.condition.text}</b></h1>
-            
-                                        </div>
-                                        
-                                        
-                                        <table slot="footer" class="inner-table"> 
+        <div style="background-color: rgb(245, 245, 245);">
+            <template for:each={WeatherData} for:item="i">
+                <template if:true={CMPDevice}>
+                    <div key={i.location}
+                        style="display: grid; grid-template-columns: auto auto auto;margin:0.5%; padding: 10px;margin-bottom:0.5rem;">
+                        <template for:each={i.forecast.forecastday} for:item="j">
+                            <div key={j.date} style="padding: 0.3rem;">
+                                <lightning-card class="slds-size_xxlarge">
+                                    <p slot="title" style="font-weight: 600px;"><lightning-icon
+                                            icon-name="utility:date_time"
+                                            size="small"></lightning-icon>&nbsp;{j.dayOfWeek}</p>
+                                    
+                                    <div style="padding: 2%;text-align:center;" class="slds-col">
+
+                                        <h1><b><img src={j.day.condition.icon} />{j.day.condition.text}</b></h1>
+
+                                    </div>
+
+                                    <!--Forecast-->
+
+                                    <div class="forecast-table-container" style="margin-top: 0.4rem;">
+                                        <table>
                                             <tbody>
                                                 <tr>
-                                                    <th><lightning-icon icon-name="utility:sort" size="small"></lightning-icon> &nbsp; Range</th>
-                                                    <th>Min</th>
-                                                    <th>Max</th>
+                                                    <template for:each={j.hour} for:item="t">
+                                                        <th key={t.time} style="background-color: lightgrey;">{t.xtime}</th>
+                                                    </template>
                                                 </tr>
                                                 <tr>
-                                                    <td>{j.dayOfWeek}</td>
-                                                    <td>{j.day.mintemp_c} °C</td>
-                                                    <td>{j.day.maxtemp_c} °C</td>
+                                                    <template for:each={j.hour} for:item="ic">
+                                                        <td key={ic.time}><img src={ic.condition.icon} /></td>
+                                                    </template>
+                                                </tr>
+                                                <tr>
+                                                    <template for:each={j.hour} for:item="c">
+                                                        <td key={c.time}>{c.temp_c}°C</td>
+                                                    </template>
                                                 </tr>
                                             </tbody>
                                         </table>
+                                    </div>
 
-                                    </lightning-card>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-            
-                    <template if:false={CMPDevice}>
-                    
-                        <div key={i.location}>
-                            <br/>
-                            <template for:each={i.forecast.forecastday} for:item="j">
-                                <div key={j.date}>
-                                    <lightning-card style="margin-right:1rem" class="slds-size_xxlarge">
-                                        <p slot="title" style="font-weight: 600px;"><lightning-icon icon-name="utility:date_time" size="small"></lightning-icon>&nbsp;{j.dayOfWeek}</p>
-                                        <lightning-button icon-name="utility:clock" label="Hourly" variant="brand-text" slot="actions" data-value={j.date}
-                                            onclick={ShowModal}></lightning-button>
-                                        <div style="padding: 2%;text-align:center;" class="slds-col">
-                                            
-                                            <h1><b><img src={j.day.condition.icon} />{j.day.condition.text}</b></h1>
-            
-                                        </div>
-                                        
-                                        <table slot="footer" class="inner-table">
-                                            <tbody>
-                                                <tr>
-                                                    <th><lightning-icon icon-name="utility:sort" size="small"></lightning-icon> &nbsp; Range</th>
-                                                    <th>Min</th>
-                                                    <th>Max</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>{j.dayOfWeek}</td>
-                                                    <td>{j.day.mintemp_c} °C</td>
-                                                    <td>{j.day.maxtemp_c} °C</td> 
-                                                </tr>
-                                            </tbody>
-                                        </table>
 
-                                    </lightning-card>
-                                </div>
-                            </template>
-                        </div>
-            
-                    </template>
-            
-            
+                                    <lightning-layout slot="actions" style="font-weight: 600;">
+                                        <lightning-layout-item>
+                                            <div style="padding: 0.1rem;border-style:ridge;background-color:lightblue"><lightning-icon icon-name="utility:arrowdown" size="x-small"></lightning-icon> {j.day.mintemp_c} °C</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item>
+                                            <div style="padding: 0.1rem;border-style:ridge;background-color:lightcoral"><lightning-icon icon-name="utility:arrowup" size="x-small"></lightning-icon> {j.day.maxtemp_c} °C</div>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </div>
                 </template>
-            </div>
-            <br />
+
+                <template if:false={CMPDevice}>
+
+                    <div key={i.location}>
+                        <br />
+                        <template for:each={i.forecast.forecastday} for:item="j">
+                            <div key={j.date}>
+                                <lightning-card style="margin-right:1rem" class="slds-size_xxlarge">
+                                    <p slot="title" style="font-weight: 600px;"><lightning-icon
+                                            icon-name="utility:date_time"
+                                            size="small"></lightning-icon>&nbsp;{j.dayOfWeek}</p>
+                                    
+                                    <div style="padding: 2%;text-align:center;" class="slds-col">
+
+                                        <h1><b><img src={j.day.condition.icon} />{j.day.condition.text}</b></h1>
+
+                                        <!--Forcast-->
+
+                                        <div class="forecast-table-container" slot="footer" style="margin-top: 0.4rem;">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <template for:each={j.hour} for:item="t">
+                                                        <th style="background-color: lightgrey;" key={t.time}>{t.xtime}</th>
+                                                    </template>
+                                                </tr>
+                                                <tr>
+                                                    <template for:each={j.hour} for:item="ic">
+                                                        <td key={ic.time}><img src={ic.condition.icon} /></td>
+                                                    </template>
+                                                </tr>
+                                                <tr>
+                                                    <template for:each={j.hour} for:item="c">
+                                                        <td key={c.time}>{c.temp_c}°C</td>
+                                                    </template>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <lightning-layout slot="actions" style="font-weight: 600;">
+                                        <lightning-layout-item>
+                                            <div style="padding: 0.1rem;border-style:ridge;background-color:lightblue"><lightning-icon icon-name="utility:arrowdown" size="x-small"></lightning-icon> {j.day.mintemp_c} °C</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item>
+                                            <div style="padding: 0.1rem;border-style:ridge;background-color:lightcoral"><lightning-icon icon-name="utility:arrowup" size="x-small"></lightning-icon> {j.day.maxtemp_c} °C</div>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+                                    
+
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </div>
+
+                </template>
+
+
+            </template>
+        </div>
+        <br />
 
 
 
@@ -190,7 +239,9 @@
                                     <tr key={i.time}>
                                         <td><b>{i.xtime}</b></td>
                                         <td>{i.temp_c}°C</td>
-                                        <td><div><img src={i.condition.icon} /><br><b>{i.condition.text}</b></div></td>
+                                        <td>
+                                            <div><img src={i.condition.icon} /><br><b>{i.condition.text}</b></div>
+                                        </td>
                                     </tr>
                                 </template>
                             </tbody>
